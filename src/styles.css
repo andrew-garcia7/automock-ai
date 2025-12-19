@@ -1,0 +1,117 @@
+/* TAILWIND v4 import (REQUIRED) */
+@import "tailwindcss";
+
+/* CUSTOM CSS VARIABLES */
+:root {
+  --bg: #ffffff;
+  --card: #f7fafc;
+  --accent: #0ea5e9;
+  --muted: #64748b;
+}
+
+[data-theme="dark"] {
+  --bg: #071226;
+  --card: #071a2a;
+  --accent: #00d4ff;
+  --muted: #9aa4b2;
+  color-scheme: dark;
+}
+
+/* GLOBAL STYLING */
+body {
+  margin: 0;
+  background-color: #05080F !important;
+  color: white;
+  font-family: Inter, system-ui, sans-serif;
+  min-height: 100vh;
+}
+
+
+/* GENERAL UTILITY CLASSES */
+
+.card {
+  background: var(--card);
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(2, 6, 23, 0.06);
+}
+
+
+.btn {
+  background: var(--accent);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+
+
+.video-box {
+  display: flex;
+  gap: 12px;
+}
+
+.video {
+  width: 48%;
+  border-radius: 8px;
+  background: #000;
+}
+
+.side {
+  width: 48%;
+}
+
+.question {
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.neon-glow {
+  text-shadow: 0 0 6px rgba(0, 234, 255, 0.4),
+               0 0 14px rgba(0, 234, 255, 0.3);
+}
+
+@keyframes glowText {
+  0%, 100% { text-shadow: 0 0 20px #00eaff; }
+  50% { text-shadow: 0 0 40px #00eaff; }
+}
+
+.animate-glowText {
+  animation: glowText 3s infinite ease-in-out;
+}
+
+
+/* Gradient Animated Logo */
+.animate-gradient {
+  background: linear-gradient(90deg, #00eaff, #ff00ff, #00eaff);
+  background-size: 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientMove 3s infinite alternate;
+}
+
+@keyframes gradientMove {
+  0% { background-position: 0% }
+  100% { background-position: 100% }
+}
+/* Light glow when hovering navbar links */
+nav a:hover {
+  text-shadow: 0 0 10px #00eaff;
+}
+
+/* Animation for output console */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out;
+}
