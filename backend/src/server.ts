@@ -31,7 +31,7 @@ app.get("/", (req, res) => {
   res.send("🚀 AutoMock AI Backend Running");
 });
 
-const PORT = process.env.PORT || 8080;
+const PORT = Number(process.env.PORT) || 8080;
 
 // Important binding for Railway
 app.listen(PORT, "0.0.0.0", () => {
