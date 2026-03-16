@@ -12,20 +12,28 @@ import codeRoutes from "./routes/code";
 dotenv.config();
 
 const app = express();
+
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Static uploads (optional)
+// Static uploads
 app.use("/uploads", express.static(path.join(process.cwd(), "src/uploads")));
 
-// Mount routes
+// Routes
 app.use("/interview", interviewRoutes);
 app.use("/resume", resumeRoutes);
 app.use("/resume-builder", resumeBuilderRoutes);
 app.use("/code", codeRoutes);
 
-const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => {
-  console.log(`🚀 Backend running at http://localhost:${PORT}`);
+// Root route (IMPORTANT for Railway)
+app.get("/", (req, res) => {
+  res.send("🚀 AutoMock AI Backend Running");
+});
+
+const PORT = process.env.PORT || 8080;
+
+// Important binding for Railway
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`🚀 Backend running on port ${PORT}`);
 });
