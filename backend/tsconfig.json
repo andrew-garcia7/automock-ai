@@ -4,10 +4,12 @@
     "module": "CommonJS",
     "outDir": "dist",
     "rootDir": "src",
+    "moduleResolution": "node",
     "strict": false,
     "noImplicitAny": false,
     "esModuleInterop": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "resolveJsonModule": true
   },
   "include": [
     "src"
