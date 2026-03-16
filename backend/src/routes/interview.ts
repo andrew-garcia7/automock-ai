@@ -175,7 +175,7 @@ router.post("/:id/end", async (req, res) => {
       responses.length > 0
         ? Number(
             (
-              responses.reduce((s, r) => s + r.score, 0) /
+              responses.reduce((s: number, r: any) => s + r.score, 0) /
               responses.length
             ).toFixed(2)
           )
@@ -213,7 +213,7 @@ router.get("/list", async (req, res) => {
     });
 
     return res.json(
-      list.map((i) => ({
+      list.map((i: any) => ({
         id: i.id,
         category: i.category,
         level: i.level,
@@ -221,7 +221,7 @@ router.get("/list", async (req, res) => {
         startedAt: i.startedAt,
         endedAt: i.endedAt,
         questions: i.questions ? JSON.parse(i.questions) : [],
-        responses: i.responses.map((r) => ({
+        responses: i.responses.map((r: any) => ({
           question: r.question,
           answer: r.answer,
           score: r.score,
