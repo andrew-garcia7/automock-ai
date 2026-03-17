@@ -3,18 +3,12 @@ import cors from "cors";
 import dotenv from "dotenv";
 
 process.on("uncaughtException", (err) => {
-  console.error(" UNCAUGHT EXCEPTION:", err);
+  console.error("UNCAUGHT EXCEPTION:", err);
 });
 
 process.on("unhandledRejection", (err) => {
-  console.error(" UNHANDLED REJECTION:", err);
+  console.error("UNHANDLED REJECTION:", err);
 });
-
-
-import interviewRoutes from "./routes/interview";
-import resumeRoutes from "./routes/resume";
-import resumeBuilderRoutes from "./routes/resumeBuilder";
-import codeRoutes from "./routes/code";
 
 dotenv.config();
 
@@ -22,32 +16,17 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-// Routes
-//app.use("/interview", interviewRoutes);
-//app.use("/resume", resumeRoutes);
-//app.use("/resume-builder", resumeBuilderRoutes);
-//app.use("/code", codeRoutes);
 
 app.get("/test", (req, res) => {
   res.send("TEST OK");
 });
 
-// Root route
 app.get("/", (req, res) => {
-  console.log("ROOT HIT");
   res.send("🚀 AutoMock AI Backend Running");
 });
 
-// Error handler (LAST middleware)
-app.use((err: any, req: any, res: any, next: any) => {
-  console.error("ERROR:", err);
-  res.status(500).send("Server Error");
-});
+const PORT = process.env.PORT || 8080;
 
-const PORT = Number(process.env.PORT) || 8080;
-
-app.listen(PORT,  () => {
+app.listen(PORT, () => {
   console.log(`🚀 Backend running on port ${PORT}`);
 });
