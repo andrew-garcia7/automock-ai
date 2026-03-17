@@ -18,7 +18,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Static uploads
-app.use("/uploads", express.static(path.join(process.cwd(), "src/uploads")));
+app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
 // Routes
 app.use("/interview", interviewRoutes);
@@ -31,9 +31,8 @@ app.get("/", (req, res) => {
   res.send("🚀 AutoMock AI Backend Running");
 });
 
-const PORT = Number(process.env.PORT) || 8080;
+const PORT = process.env.PORT || 8080;
 
-// Important binding for Railway
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`🚀 Backend running on port ${PORT}`);
 });
