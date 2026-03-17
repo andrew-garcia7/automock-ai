@@ -48,6 +48,6 @@ app.use((err: any, req: any, res: any, next: any) => {
 
 const PORT = Number(process.env.PORT) || 8080;
 
-app.listen(PORT, "0.0.0.0", () => {
+app.listen(PORT,  () => {
   console.log(`🚀 Backend running on port ${PORT}`);
 });
