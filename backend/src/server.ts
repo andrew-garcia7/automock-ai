@@ -25,7 +25,20 @@ app.get("/", (req, res) => {
   res.send("🚀 AutoMock AI Backend Running");
 });
 
-const PORT = process.env.PORT;
+// 
+app.get("/api", (req, res) => {
+  res.send("API root working 🚀");
+});
+
+app.get("/api/interview", (req, res) => {
+  res.send("Interview API working 🚀");
+});
+
+app.get("/api/user", (req, res) => {
+  res.send("User API working 🚀");
+});
+
+const PORT = Number(process.env.PORT) || 8080;
 
 app.listen(PORT, () => {
   console.log(`🚀 Backend running on port ${PORT}`);
