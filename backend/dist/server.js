@@ -22,7 +22,7 @@ app.get("/test", (req, res) => {
 app.get("/", (req, res) => {
     res.send("🚀 AutoMock AI Backend Running");
 });
-const PORT = process.env.PORT;
+const PORT = Number(process.env.PORT) || 8080;
 app.listen(PORT, () => {
     console.log(`🚀 Backend running on port ${PORT}`);
 });
