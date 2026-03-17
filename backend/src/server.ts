@@ -25,10 +25,14 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Routes
-app.use("/interview", interviewRoutes);
-app.use("/resume", resumeRoutes);
-app.use("/resume-builder", resumeBuilderRoutes);
-app.use("/code", codeRoutes);
+//app.use("/interview", interviewRoutes);
+//app.use("/resume", resumeRoutes);
+//app.use("/resume-builder", resumeBuilderRoutes);
+//app.use("/code", codeRoutes);
+
+app.get("/test", (req, res) => {
+  res.send("TEST OK");
+});
 
 // Root route
 app.get("/", (req, res) => {
