@@ -1,3 +1,5 @@
+import interviewRoutes from "./routes/interview.js";
+
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
@@ -34,9 +36,8 @@ app.get("/api/interview", (req, res) => {
   res.send("Interview API working 🚀");
 });
 
-app.get("/api/user", (req, res) => {
-  res.send("User API working 🚀");
-});
+
+app.use("/api/interview", interviewRoutes);
 
 const PORT = Number(process.env.PORT) || 8080;
 
