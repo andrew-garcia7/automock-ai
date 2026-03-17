@@ -2,6 +2,15 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 
+process.on("uncaughtException", (err) => {
+  console.error(" UNCAUGHT EXCEPTION:", err);
+});
+
+process.on("unhandledRejection", (err) => {
+  console.error(" UNHANDLED REJECTION:", err);
+});
+
+
 import interviewRoutes from "./routes/interview";
 import resumeRoutes from "./routes/resume";
 import resumeBuilderRoutes from "./routes/resumeBuilder";
