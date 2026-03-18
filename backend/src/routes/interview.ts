@@ -36,22 +36,8 @@ router.post("/start", upload.single("resume"), async (req, res) => {
 
     // ---- Resume parsing (optional)
     if (req.file) {
-      try {
-        resumeText = await extractResumeText(req.file.path);
-        const created = await prisma.resume.create({
-          data: {
-            filename: req.file.filename,
-            text: resumeText,
-            atsScore: resumeText
-              ? Math.min(100, resumeText.length / 20)
-              : null,
-          },
-        });
-        resumeRecordId = created.id;
-      } catch (e) {
-        console.error("Resume parse failed:", e);
-      }
-    }
+  console.log("Resume uploaded:", req.file.filename);
+}
 
     // ---- Generate questions (NO API KEY)
     let questions: string[] = [];

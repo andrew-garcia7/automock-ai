@@ -8,7 +8,6 @@ const multer_1 = __importDefault(require("multer"));
 const path_1 = __importDefault(require("path"));
 const fs_1 = __importDefault(require("fs"));
 const db_1 = require("../db");
-const resumeParser_1 = require("../utils/resumeParser");
 const questionPlanner_1 = require("../utils/questionPlanner");
 const answerEvaluator_1 = require("../utils/answerEvaluator");
 const router = (0, express_1.Router)();
@@ -34,22 +33,7 @@ router.post("/start", upload.single("resume"), async (req, res) => {
         let resumeRecordId = null;
         // ---- Resume parsing (optional)
         if (req.file) {
-            try {
-                resumeText = await (0, resumeParser_1.extractResumeText)(req.file.path);
-                const created = await db_1.prisma.resume.create({
-                    data: {
-                        filename: req.file.filename,
-                        text: resumeText,
-                        atsScore: resumeText
-                            ? Math.min(100, resumeText.length / 20)
-                            : null,
-                    },
-                });
-                resumeRecordId = created.id;
-            }
-            catch (e) {
-                console.error("Resume parse failed:", e);
-            }
+            console.log("Resume uploaded:", req.file.filename);
         }
         // ---- Generate questions (NO API KEY)
         let questions = [];
