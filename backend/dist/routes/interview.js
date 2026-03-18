@@ -7,9 +7,11 @@ const express_1 = require("express");
 const multer_1 = __importDefault(require("multer"));
 const path_1 = __importDefault(require("path"));
 const fs_1 = __importDefault(require("fs"));
+const questionPlanner_1 = require("../utils/questionPlanner");
+const answerEvaluator_1 = require("../utils/answerEvaluator");
 const router = (0, express_1.Router)();
 /* ===============================
-UPLOAD CONFIG
+   UPLOAD CONFIG
 ================================ */
 const uploadsDir = path_1.default.join(process.cwd(), "src", "uploads");
 if (!fs_1.default.existsSync(uploadsDir)) {
@@ -20,50 +22,39 @@ const upload = (0, multer_1.default)({
     limits: { fileSize: 10 * 1024 * 1024 },
 });
 /* ===============================
-START INTERVIEW (WORKING ✅)
+   START INTERVIEW
 ================================ */
 router.post("/start", upload.single("resume"), async (req, res) => {
     try {
-        const { category = "technical", level = "junior", count = "4" } = req.body;
+        const category = req.body.category || "technical";
+        const level = req.body.level || "junior";
+        const count = req.body.count || "4";
         const qcount = Math.max(1, Math.min(20, Number(count) || 4));
-        `` `
-let resumeText = "";
-
-// ✅ Safe upload (no parsing)
-if (req.file) {
-  console.log("Resume uploaded:", req.file.filename);
-}
-
-// ---- Generate questions
-let questions: string[] = [];
-try {
-  questions = await generateQuestionPlan(
-    category,
-    level,
-    resumeText,
-    qcount
-  );
-} catch {
-  questions = [
-    "Explain event loop in JavaScript.",
-    "What is closure?",
-    "Explain differences between let, var and const.",
-    "Describe how a hash table works.",
-  ].slice(0, qcount);
-}
-
-// ✅ TEMP interview (no DB)
-const interview = {
-  id: Math.floor(Math.random() * 10000),
-};
-
-return res.json({
-  success: true,
-  interviewId: interview.id,
-  questions,
-  resumeId: null,
-});
-` ``;
+        let resumeText = "";
+        if (req.file) {
+            console.log("Resume uploaded:", req.file.filename);
+        }
+        let questions = [];
+        try {
+            questions = await (0, questionPlanner_1.generateQuestionPlan)(category, level, resumeText, qcount);
+        }
+        catch {
+            questions = [
+                "Explain event loop in JavaScript.",
+                "What is closure?",
+                "Explain let vs var vs const.",
+                "What is a hash table?",
+            ].slice(0, qcount);
+        }
+        const interview = {
+            id: Math.floor(Math.random() * 10000),
+        };
+        return res.json({
+            success: true,
+            interviewId: interview.id,
+            questions,
+            resumeId: null,
+        });
     }
     catch (err) {
         console.error("START ERROR:", err);
@@ -74,37 +65,32 @@ return res.json({
     }
 });
 /* ===============================
-DUMMY ANSWER API (SAFE VERSION)
+   SUBMIT ANSWER
 ================================ */
 router.post("/:id/answer", async (req, res) => {
     try {
-        let { question, answer } = req.body;
-        `` `
-question =
-  typeof question === "string"
-    ? question.trim()
-    : JSON.stringify(question);
-
-answer =
-  typeof answer === "string"
-    ? answer.trim()
-    : JSON.stringify(answer);
-
-if (!question || !answer) {
-  return res.status(400).json({
-    success: false,
-    error: "Question or answer missing",
-  });
-}
-
-const result = await evaluateAnswer(question, answer);
-
-return res.json({
-  success: true,
-  score: result.score,
-  feedback: result.feedback,
-});
-` ``;
+        let question = req.body.question;
+        let answer = req.body.answer;
+        question =
+            typeof question === "string"
+                ? question.trim()
+                : JSON.stringify(question);
+        answer =
+            typeof answer === "string"
+                ? answer.trim()
+                : JSON.stringify(answer);
+        if (!question || !answer) {
+            return res.status(400).json({
+                success: false,
+                error: "Question or answer missing",
+            });
+        }
+        const result = await (0, answerEvaluator_1.evaluateAnswer)(question, answer);
+        return res.json({
+            success: true,
+            score: result.score,
+            feedback: result.feedback,
+        });
     }
     catch (err) {
         console.error("ANSWER ERROR:", err);
@@ -115,7 +101,7 @@ return res.json({
     }
 });
 /* ===============================
-END INTERVIEW (DUMMY)
+   END INTERVIEW
 ================================ */
 router.post("/:id/end", async (req, res) => {
     return res.json({
@@ -124,13 +110,13 @@ router.post("/:id/end", async (req, res) => {
     });
 });
 /* ===============================
-LIST (EMPTY)
+   LIST
 ================================ */
 router.get("/list", async (req, res) => {
     return res.json([]);
 });
 /* ===============================
-GET INTERVIEW (DUMMY)
+   GET INTERVIEW
 ================================ */
 router.get("/:id", async (req, res) => {
     return res.json({});
