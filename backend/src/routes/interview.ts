@@ -1,5 +1,8 @@
 
 import { Router } from "express";
+
+console.log("NEW DEPLOY VERSION 🔥");
+
 import multer from "multer";
 import path from "path";
 import fs from "fs";
@@ -207,6 +210,22 @@ router.get("/list", async (req, res) => {
 
   } catch (err: any) {
     console.error("LIST ERROR:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+/* ===============================
+CLEAR ALL HISTORY
+================================ */
+router.delete("/clear", async (req, res) => {
+  try {
+    await prisma.response.deleteMany({});
+    await prisma.interview.deleteMany({});
+
+    res.json({ success: true, message: "History cleared" });
+
+  } catch (err: any) {
+    console.error("CLEAR ERROR:", err);
     res.status(500).json({ error: err.message });
   }
 });
