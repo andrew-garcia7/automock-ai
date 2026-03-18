@@ -1,4 +1,4 @@
-import interviewRoutes from "./routes/interview.js";
+import interviewRoutes from "./routes/interview";
 
 import express from "express";
 import cors from "cors";

@@ -146,4 +146,33 @@ router.post("/:id/end", async (req, res) => {
         });
     }
 });
+/* ===============================
+GET INTERVIEW LIST (HISTORY)
+================================ */
+router.get("/list", async (req, res) => {
+    try {
+        const interviews = await db_1.prisma.interview.findMany({
+            orderBy: { startedAt: "desc" },
+            include: {
+                responses: true,
+            },
+        });
+        const formatted = interviews.map((i) => ({
+            id: i.id,
+            category: i.category,
+            level: i.level,
+            score: i.score,
+            startedAt: i.startedAt,
+            endedAt: i.endedAt,
+            questions: i.questions ? JSON.parse(i.questions) : [],
+            responses: i.responses || [],
+            responseCount: i.responses?.length || 0,
+        }));
+        res.json(formatted);
+    }
+    catch (err) {
+        console.error("LIST ERROR:", err);
+        res.status(500).json({ error: err.message });
+    }
+});
 exports.default = router;
