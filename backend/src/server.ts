@@ -1,4 +1,5 @@
 import interviewRoutes from "./routes/interview";
+import codeRoutes from "./routes/code";
 
 import express from "express";
 import cors from "cors";
@@ -35,7 +36,7 @@ app.get("/api", (req, res) => {
 app.use("/api/interview", interviewRoutes);
 
 
-app.use("/api/interview", interviewRoutes);
+app.use("/api/code", codeRoutes);
 
 const PORT = Number(process.env.PORT) || 8080;
 
