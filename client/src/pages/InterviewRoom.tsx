@@ -348,7 +348,7 @@ export default function InterviewRoom() {
             <div className="mt-6 flex gap-4 justify-center">
 
               <button
-                onClick={() => navigate("/history")}
+                onClick={() => navigate("/history", { state: { refresh: true } })}
                 className="px-6 py-2 bg-cyan-500 rounded"
               >
                 History

@@ -1,3 +1,4 @@
+import { useLocation } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { API } from "../api";
 
@@ -31,9 +32,10 @@ export default function History() {
       .finally(() => setLoading(false));
   };
 
+  const location = useLocation();
   useEffect(() => {
-    loadHistory();
-  }, []);
+  loadHistory();
+}, [location.state]);
 
   const formatDate = (dateString) => {
     if (!dateString) return "N/A";
