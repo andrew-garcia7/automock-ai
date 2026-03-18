@@ -32,9 +32,7 @@ app.get("/api", (req, res) => {
   res.send("API root working 🚀");
 });
 
-app.get("/api/interview", (req, res) => {
-  res.send("Interview API working 🚀");
-});
+app.use("/api/interview", interviewRoutes);
 
 
 app.use("/api/interview", interviewRoutes);

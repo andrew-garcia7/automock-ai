@@ -27,9 +27,7 @@ app.get("/", (req, res) => {
 app.get("/api", (req, res) => {
     res.send("API root working 🚀");
 });
-app.get("/api/interview", (req, res) => {
-    res.send("Interview API working 🚀");
-});
+app.use("/api/interview", interview_js_1.default);
 app.use("/api/interview", interview_js_1.default);
 const PORT = Number(process.env.PORT) || 8080;
 app.listen(PORT, () => {
