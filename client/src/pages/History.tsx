@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import { API } from "../api";
 
 interface Interview {
   id: number;
@@ -26,8 +26,7 @@ export default function History() {
 
   const loadHistory = () => {
     setLoading(true);
-    axios
-      .get("http://localhost:4000/interview/list")
+    API.get("/api/interview/list")
       .then((r) => setList(Array.isArray(r.data) ? r.data : []))
       .finally(() => setLoading(false));
   };
@@ -49,7 +48,7 @@ export default function History() {
 
     setClearing(true);
     try {
-      await axios.delete("http://localhost:4000/interview/clear");
+      await API.delete("/api/interview/clear");
       setList([]);
       alert("History cleared successfully");
     } catch (err) {

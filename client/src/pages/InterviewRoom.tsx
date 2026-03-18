@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useLocation, useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
+import { API } from "../api";
 import Webcam from "react-webcam";
 
 export default function InterviewRoom() {
@@ -68,9 +68,7 @@ export default function InterviewRoom() {
 
       try {
 
-        const res = await axios.get(
-          `http://localhost:4000/interview/${interviewId}`
-        );
+        const res = await API.get(`/api/interview/${interviewId}`);
 
         if (Array.isArray(res.data?.questions)) {
 
@@ -131,10 +129,10 @@ export default function InterviewRoom() {
 
     try {
 
-      const res = await axios.post(
-        `http://localhost:4000/interview/${interviewId}/answer`,
-        { question, answer }
-      );
+      const res = await API.post(`/api/interview/${interviewId}/answer`, {
+        question,
+        answer
+      });
 
       if (!res.data?.success) {
 
@@ -186,9 +184,9 @@ export default function InterviewRoom() {
 
     try {
 
-      const res = await axios.post(
-        `http://localhost:4000/interview/${interviewId}/end`
-      );
+      const res = await API.post(
+  `/api/interview/${interviewId}/end`
+);
 
       if (res.data?.success) {
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import { API } from "../api";
 import { ATSReport, BuilderState } from "../types/resume";
 import { ATSScoreGauge } from "../components/resume/ATSScoreGauge";
 import { InsightPanel } from "../components/resume/InsightPanel";
@@ -68,7 +68,7 @@ export default function Resume() {
     try {
       const fd = new FormData();
       fd.append("file", file);
-      const r = await axios.post("http://localhost:4000/resume/upload", fd);
+      const r = await API.post("/api/resume/upload", fd);
       setReport(r.data);
       setActiveTab("assistant");
     } catch (err: any) {
@@ -82,7 +82,7 @@ export default function Resume() {
     setSavingDraft(true);
     try {
       const userId = localStorage.getItem("userId");
-      const response = await axios.post("http://localhost:4000/resume-builder/draft", {
+      const response = await API.post("/api/resume-builder/draft",  {
         id: draftId,
         title: builderState.personal.headline || "Untitled Resume",
         payload: builderState,
@@ -102,7 +102,7 @@ export default function Resume() {
     setAnalyzingBuilder(true);
     setError("");
     try {
-      const r = await axios.post("http://localhost:4000/resume/analyze-text", { text });
+      const r = await API.post("/api/resume/analyze-text", { text });
       setReport(r.data);
       setActiveTab("assistant");
     } catch (err: any) {

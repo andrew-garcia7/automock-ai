@@ -1,3 +1,4 @@
+import { API } from "../api";
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -32,11 +33,11 @@ export default function NewInterview() {
         form.append("resume", resume);
       }
 
-      const res = await axios.post(
-        "http://localhost:4000/interview/start",
-        form,
-        { timeout: 60000 }
-      );
+      const res = await API.post(
+  "/api/interview/start",
+  form,
+  { timeout: 60000 }
+);
 
       if (res.data?.success) {
 

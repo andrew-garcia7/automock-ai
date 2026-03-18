@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as monaco from "monaco-editor";
-import axios from "axios";
+import { API } from "../api";
 
 type Language = "javascript" | "python" | "java" | "cpp";
 type Theme = "dark" | "light" | "dracula";
@@ -146,7 +146,7 @@ Explain logic verbally in interviews.`
       setLoading(true);
       setOutput("");
 
-      const res = await axios.post("http://localhost:4000/code/run", {
+      const res = await API.post("/api/code/run", {
         code,
         language: "node"
       });
