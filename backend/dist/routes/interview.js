@@ -7,11 +7,12 @@ const express_1 = require("express");
 const multer_1 = __importDefault(require("multer"));
 const path_1 = __importDefault(require("path"));
 const fs_1 = __importDefault(require("fs"));
+const db_1 = require("../db");
 const questionPlanner_1 = require("../utils/questionPlanner");
 const answerEvaluator_1 = require("../utils/answerEvaluator");
 const router = (0, express_1.Router)();
 /* ===============================
-   UPLOAD CONFIG
+UPLOAD CONFIG
 ================================ */
 const uploadsDir = path_1.default.join(process.cwd(), "src", "uploads");
 if (!fs_1.default.existsSync(uploadsDir)) {
@@ -22,7 +23,7 @@ const upload = (0, multer_1.default)({
     limits: { fileSize: 10 * 1024 * 1024 },
 });
 /* ===============================
-   START INTERVIEW
+START INTERVIEW
 ================================ */
 router.post("/start", upload.single("resume"), async (req, res) => {
     try {
@@ -30,13 +31,12 @@ router.post("/start", upload.single("resume"), async (req, res) => {
         const level = req.body.level || "junior";
         const count = req.body.count || "4";
         const qcount = Math.max(1, Math.min(20, Number(count) || 4));
-        let resumeText = "";
         if (req.file) {
             console.log("Resume uploaded:", req.file.filename);
         }
         let questions = [];
         try {
-            questions = await (0, questionPlanner_1.generateQuestionPlan)(category, level, resumeText, qcount);
+            questions = await (0, questionPlanner_1.generateQuestionPlan)(category, level, "", qcount);
         }
         catch {
             questions = [
@@ -46,14 +46,19 @@ router.post("/start", upload.single("resume"), async (req, res) => {
                 "What is a hash table?",
             ].slice(0, qcount);
         }
-        const interview = {
-            id: Math.floor(Math.random() * 10000),
-        };
+        const interview = await db_1.prisma.interview.create({
+            data: {
+                userId: null,
+                category,
+                level,
+                score: null,
+                questions: JSON.stringify(questions),
+            },
+        });
         return res.json({
             success: true,
             interviewId: interview.id,
             questions,
-            resumeId: null,
         });
     }
     catch (err) {
@@ -65,12 +70,12 @@ router.post("/start", upload.single("resume"), async (req, res) => {
     }
 });
 /* ===============================
-   SUBMIT ANSWER
+SUBMIT ANSWER
 ================================ */
 router.post("/:id/answer", async (req, res) => {
     try {
-        let question = req.body.question;
-        let answer = req.body.answer;
+        const interviewId = Number(req.params.id);
+        let { question, answer } = req.body;
         question =
             typeof question === "string"
                 ? question.trim()
@@ -86,6 +91,14 @@ router.post("/:id/answer", async (req, res) => {
             });
         }
         const result = await (0, answerEvaluator_1.evaluateAnswer)(question, answer);
+        await db_1.prisma.response.create({
+            data: {
+                interviewId,
+                question,
+                answer,
+                score: result.score,
+            },
+        });
         return res.json({
             success: true,
             score: result.score,
@@ -101,24 +114,36 @@ router.post("/:id/answer", async (req, res) => {
     }
 });
 /* ===============================
-   END INTERVIEW
+END INTERVIEW
 ================================ */
 router.post("/:id/end", async (req, res) => {
-    return res.json({
-        success: true,
-        finalScore: Math.floor(Math.random() * 10),
-    });
-});
-/* ===============================
-   LIST
-================================ */
-router.get("/list", async (req, res) => {
-    return res.json([]);
-});
-/* ===============================
-   GET INTERVIEW
-================================ */
-router.get("/:id", async (req, res) => {
-    return res.json({});
+    try {
+        const interviewId = Number(req.params.id);
+        const responses = await db_1.prisma.response.findMany({
+            where: { interviewId },
+        });
+        const avg = responses.length > 0
+            ? responses.reduce((s, r) => s + r.score, 0) /
+                responses.length
+            : 0;
+        await db_1.prisma.interview.update({
+            where: { id: interviewId },
+            data: {
+                score: avg,
+                endedAt: new Date(),
+            },
+        });
+        return res.json({
+            success: true,
+            finalScore: avg,
+        });
+    }
+    catch (err) {
+        console.error("END ERROR:", err);
+        return res.status(500).json({
+            success: false,
+            error: err.message,
+        });
+    }
 });
 exports.default = router;
